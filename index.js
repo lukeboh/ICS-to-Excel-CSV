@@ -8,19 +8,20 @@ const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
   /**The beginning of the field to read from the ICS file */
-  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'END:VEVENT'],
+  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND',/* 'DESCRIPTION',*/ 'SUMMARY', 'LOCATION', 'END:VEVENT'],
   /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
   SUBSTRING: [0, 8, 6, 12, 8, 0]
 };
 
 /** EventRecord 物件用來放單一日曆事件 */
 class EventRecord {
-  constructor(start, end, title, more) {
+  constructor(start, end, title, /*more*/location) {
     this.start = start.trim();
     this.end = end.trim();
     /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。 */
     this.title = title.trim().replace(/\\,/g, '，');
-    this.more = more.trim().replace(/\\,/g, '，');
+   /* this.more = more.trim().replace(/\\,/g, '，');*/
+	this.location = location.trim().replace(/\\,/g, '，');
   }
 }
 
@@ -51,7 +52,7 @@ $(function() {
 
 
 /**
- * 將讀入之 ICS 檔案解析，與 KEY_WORDS 比較是否為我們感興趣之欄位，將其放在暫存之欄位陣列內。
+ * Will be read into the ICS file resolution, compared with KEY_WORDS whether we are interested in the field, put it in the field of temporary array.
  * @param  {Array<string>} input [讀入之字串陣列]
  */
 function parse(input) {
@@ -97,10 +98,11 @@ function printResult() {
   let str = '';
   str += '<table id="table_result" class="table table-condensed table-bordered table-stripped"><tr>';
   str += '<th>#</th>';
-  str += '<th>開始</th>';
-  str += '<th>結束</th>';
-  str += '<th>標題</th>';
-  str += '<th>詳細</th>';
+  str += '<th>Data inizio</th>';
+  str += '<th>Data fine</th>';
+  str += '<th>Nome evento</th>';
+  /*str += '<th>Descrizione</th>';*/
+  str += '<th>Luogo</th>';
   str += '</tr></table>';
   $("#div_result_table").append(str);
 
@@ -112,7 +114,8 @@ function printResult() {
     str += '<td>' + eventRecords[i].start + '</td>';
     str += '<td>' + eventRecords[i].end + '</td>';
     str += '<td>' + eventRecords[i].title + '</td>';
-    str += '<td>' + eventRecords[i].more + '</td>';
+    /*str += '<td>' + eventRecords[i].more + '</td>';*/
+	 str += '<td>' + eventRecords[i].location + '</td>';
     str += '</tr>';
     $("#table_result").append(str);
   }
@@ -126,7 +129,8 @@ function createDownloadableContent() {
     content += eventRecords[i].start + ',';
     content += eventRecords[i].end + ',';
     content += eventRecords[i].title + ',';
-    content += eventRecords[i].more + ',';
+    /*content += eventRecords[i].more + ',';*/
+	content += eventRecords[i].luogo + ',';
     content += "\n";
   }
 
