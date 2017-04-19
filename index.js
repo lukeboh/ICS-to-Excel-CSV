@@ -3,13 +3,13 @@
 /** {Array<EventRecord>} 用來放 EventRecord，最後所有日曆事件資料都在此陣列內 */
 let eventRecords = [];
 
-/** 網頁右邊印出前 N 個日曆事件 */
-const MAX_SHOW_RECORD = 10;
+/** The right side of the page to print the first N event calendar */
+const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
-  /** 從 ICS 檔案內要讀取的欄位開頭字串 */
+  /**The beginning of the field to read from the ICS file */
   WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'END:VEVENT'],
-  /** 對應上述開頭字串，此為「該欄位要從第幾個字元開始往後切 substring」 */
+  /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
   SUBSTRING: [0, 8, 6, 12, 8, 0]
 };
 
