@@ -18,7 +18,7 @@ class EventRecord {
   constructor(start, end, title, /*more*/location) {
     this.start = start.trim();
     this.end = end.trim();
-    /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。 */
+    /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。  */
     this.title = title.trim().replace(/\\,/g, '，');
    /* this.more = more.trim().replace(/\\,/g, '，');*/
 	this.location = location.trim().replace(/\\,/g, '，');
