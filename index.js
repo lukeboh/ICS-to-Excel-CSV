@@ -8,9 +8,9 @@ const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
   /**The beginning of the field to read from the ICS file */
-  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND',/* 'DESCRIPTION',*/ 'SUMMARY', 'LOCATION', 'END:VEVENT'],
+  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'LOCATION', 'END:VEVENT'],
   /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
-  SUBSTRING: [0, 8, 6, 12, 8, 0]
+  SUBSTRING: [0, 8, 6, 12, 8, 9, 0]
 };
 
 /** EventRecord 物件用來放單一日曆事件 */
@@ -36,7 +36,7 @@ $(function() {
     if (INPUT_FILE === null) {
       return;
     }
-    $('#div_result_file_name').append('檔案名稱：' + INPUT_FILE.name + '<hr/>');
+    $('#div_result_file_name').append('File name：' + INPUT_FILE.name + '<hr/>');
 
     let fileReader = new FileReader();
     fileReader.readAsText(INPUT_FILE);
@@ -56,6 +56,7 @@ $(function() {
  * @param  {Array<string>} input [讀入之字串陣列]
  */
 function parse(input) {
+	debugger;
   let _keywordIndex = 0;
   let tempArray = [];
   for (let i = 0; i < input.length; i++) {
@@ -140,7 +141,7 @@ function createDownloadableContent() {
     'class="btn btn-block btn-lg btn-success" ' +
     'href="' + getblobUrl(content) + '" ' +
     'download="' + fileName + '" ' +
-    '>下載 CSV 檔</a>';
+    '>Download CSV</a>';
   $("#div_download").append(buttonDownload);
 }
 
