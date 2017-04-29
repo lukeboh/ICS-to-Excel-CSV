@@ -7,20 +7,22 @@ let eventRecords = [];
 const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
-  /**The beginning of the field to read from the ICS file */
-  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND', 'DESCRIPTION', 'SUMMARY', 'LOCATION', 'END:VEVENT'],
+  DELIMITATORS: ['BEGIN:VEVENT', 'END:VEVENT', 'BEGIN:VALARM', 'END:VALARM'],
+	/**The beginning of the field to read from the ICS file */
+  WORDS: ['DTSTART', 'DTEND', 'SUMMARY', 'DESCRIPTION', 'LOCATION'],
   /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
-  SUBSTRING: [0, 8, 6, 12, 8, 9, 0]
+  SUBSTRING: [8, 6, 8, 12, 9]
 };
 
 /** EventRecord 物件用來放單一日曆事件 */
 class EventRecord {
-  constructor(start, end, title, /*more*/location) {
+  constructor(start, end, title, description, location) {
+	  console.log(start, end, title, description, location);
     this.start = start.trim();
     this.end = end.trim();
     /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。  */
     this.title = title.trim().replace(/\\,/g, '，');
-   /* this.more = more.trim().replace(/\\,/g, '，');*/
+   	this.description = description.trim().replace(/\\,/g, '，');
 	this.location = location.trim().replace(/\\,/g, '，');
   }
 }
@@ -55,8 +57,7 @@ $(function() {
  * Will be read into the ICS file resolution, compared with KEY_WORDS whether we are interested in the field, put it in the field of temporary array.
  * @param  {Array<string>} input [讀入之字串陣列]
  */
-function parse(input) {
-	debugger;
+function parseOld(input) {
   let _keywordIndex = 0;
   let tempArray = [];
   for (let i = 0; i < input.length; i++) {
@@ -73,19 +74,67 @@ function parse(input) {
   }
 }
 
+function parse(input) {
+	let tempArray = [];
+	var OUTSIDE=0;
+	var EVENT=1;
+	var ALARM=2;
+	var state=OUTSIDE;
+	for (let i = 0; i < input.length; i++){
+		if (state==OUTSIDE && input[i].match('^BEGIN:VEVENT'))
+			{
+				state=EVENT;
+			}
+		if (state==EVENT)
+			{
+				if (input[i].match('^BEGIN:VALARM')){
+					state=ALARM;
+				}
+			
+				else if(input[i].match('^END:VEVENT')){
+					state=OUTSIDE;
+					handleEventRecord(tempArray);
+					console.log(tempArray)
+					tempArray = [];
+				}
+			
+				else {
+					for (let j=0; j<KEY_WORDS.WORDS.length; j++){
+						if (input[i].match('^' + KEY_WORDS.WORDS[j])){
+					 		tempArray[j] = input[i].substring(KEY_WORDS.SUBSTRING[j]);
+							
+				 		}
+					}
+				}
+			}
+		if (state==ALARM && input[i].match('^END:VALARM'))
+			{
+				state=EVENT;
+			}
+	}
+}
+
 /**
  * 將暫存之欄位陣列再次做檢查後，存入最終的 eventRecords 陣列中。
  * @param  {Array<string>} arr [暫存之欄位陣列]
  */
 function handleEventRecord(arr) {
-  /** 若某日曆事件是「全天」事件，則其時間格式與「幾點到幾點」不一樣，需要再往後多切一點 */
+  /** If a calendar event is an "all day" event, its time format is not the same as "a few points" and needs to be cut*/
   if (arr[1].match('^VALUE')) {
     arr[1] = arr[1].substring(11);
   }
-  if (arr[2].match('^VALUE')) {
-    arr[2] = arr[2].substring(11);
+  if (arr[0].match('^VALUE')) {
+    arr[0] = arr[0].substring(11);
   }
-  eventRecords.push(new EventRecord(arr[1], arr[2], arr[4], arr[3]));
+	for (let k=0; k<KEY_WORDS.WORDS.length; k++){
+		console.log(k ,typeof arr[k]);
+		if("undefined" === typeof arr[k]){
+			debugger;
+			arr[k]="campo vuoto";
+		}
+	}
+
+  eventRecords.push(new EventRecord(arr[0], arr[1], arr[2], arr[4], arr[3]));
 }
 
 
