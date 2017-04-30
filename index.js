@@ -18,11 +18,12 @@ const KEY_WORDS = {
 class EventRecord {
   constructor(start, end, title, description, location) {
 	  console.log(start, end, title, description, location);
-    this.start = start.trim();
-    this.end = end.trim();
+    this.start = start;
+    this.end = end;
     /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。  */
     this.title = title.trim().replace(/\\,/g, '，');
    	this.description = description.trim().replace(/\\,/g, '，');
+	this.description = description.trim().replace(/\,/g, '，');
 	this.location = location.trim().replace(/\\,/g, '，');
   }
 }
@@ -45,7 +46,7 @@ $(function() {
     fileReader.onload = function() {
       eventRecords = [];
       parse(fileReader.result.split('\n'));
-      sortResult();
+      //sortResult();
       printResult();
       createDownloadableContent();
     };
@@ -114,6 +115,44 @@ function parse(input) {
 	}
 }
 
+
+function fixDate (badDate){
+	if (badDate.match('^TZID')){
+		var d = new Date();
+		var tempDate=badDate.split(":").pop();
+		d.setFullYear(tempDate.substring(0,4));
+		d.setMonth(tempDate.substring(4,6));
+		d.setDate(tempDate.substring(6,8));
+		d.setHours(tempDate.substring(9,11));
+		d.setMinutes(tempDate.substring(11,13));
+		d.setSeconds(0);
+		
+		
+		//Date=day+"/"+month+"/"+year+" "+hour+":"+minute;
+		console.log(d.toLocaleString());
+		return d;
+	
+	}
+	else{
+		var tempDate=badDate;
+		var d = new Date();
+		d.setFullYear(tempDate.substring(0,4));
+		d.setMonth(tempDate.substring(4,6));
+		d.setDate(tempDate.substring(6,8));
+		d.setHours(0);
+		d.setMinutes(0);
+		d.setSeconds(0);
+		return d;
+		
+		/*var tempDate=badDate;
+		var year=tempDate.substring(0,4);
+		var month=tempDate.substring(4,6);
+		var day=tempDate.substring(6,8);
+		Date=day+"/"+month+"/"+year;
+		return badDate;*/
+	}
+}
+
 /**
  * 將暫存之欄位陣列再次做檢查後，存入最終的 eventRecords 陣列中。
  * @param  {Array<string>} arr [暫存之欄位陣列]
@@ -133,14 +172,17 @@ function handleEventRecord(arr) {
 			arr[k]="campo vuoto";
 		}
 	}
-
+	 
+	arr[0]=fixDate (arr[0]);
+	arr[1]=fixDate (arr[1]);
+	
   eventRecords.push(new EventRecord(arr[0], arr[1], arr[2], arr[4], arr[3]));
 }
 
 
 function sortResult() {
   eventRecords.sort(function(a, b) {
-    return a.start.substr(0, 8) - b.start.substr(0, 8);
+    return a.start.getTime() - b.start.getTime();
   });
 }
 
@@ -151,8 +193,8 @@ function printResult() {
   str += '<th>Data inizio</th>';
   str += '<th>Data fine</th>';
   str += '<th>Nome evento</th>';
-  /*str += '<th>Descrizione</th>';*/
   str += '<th>Luogo</th>';
+  str += '<th>Descrizione</th>';
   str += '</tr></table>';
   $("#div_result_table").append(str);
 
@@ -161,10 +203,10 @@ function printResult() {
     let str = '';
     str += '<tr>';
     str += '<td>' + i + '</td>';
-    str += '<td>' + eventRecords[i].start + '</td>';
-    str += '<td>' + eventRecords[i].end + '</td>';
+    str += '<td>' + eventRecords[i].start.toLocaleString() + '</td>';
+    str += '<td>' + eventRecords[i].end.toLocaleString() + '</td>';
     str += '<td>' + eventRecords[i].title + '</td>';
-    /*str += '<td>' + eventRecords[i].more + '</td>';*/
+    str += '<td>' + eventRecords[i].description + '</td>';
 	 str += '<td>' + eventRecords[i].location + '</td>';
     str += '</tr>';
     $("#table_result").append(str);
@@ -176,11 +218,11 @@ function createDownloadableContent() {
   let content = '#,開始,結束,標題,詳細\n';
   for (let i = 0; i < eventRecords.length; i++) {
     content += i + 1 + ',';
-    content += eventRecords[i].start + ',';
-    content += eventRecords[i].end + ',';
+    content += eventRecords[i].start.toLocaleString() + ',';
+    content += eventRecords[i].end.toLocaleString() + ',';
     content += eventRecords[i].title + ',';
-    /*content += eventRecords[i].more + ',';*/
-	content += eventRecords[i].luogo + ',';
+    content += eventRecords[i].description + ',';
+	content += eventRecords[i].location + ',';
     content += "\n";
   }
 
