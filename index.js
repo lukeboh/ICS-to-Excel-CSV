@@ -10,21 +10,24 @@ const KEY_WORDS = {
   DELIMITATORS: ['BEGIN:VEVENT', 'END:VEVENT', 'BEGIN:VALARM', 'END:VALARM'],
 	/**The beginning of the field to read from the ICS file */
   WORDS: ['DTSTART', 'DTEND', 'SUMMARY', 'DESCRIPTION', 'LOCATION'],
+  END_DESCR:['LOCATION', 'X-ALT-DESC'],
   /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
   SUBSTRING: [8, 6, 8, 12, 9]
 };
 
+function CleanString(text)
+{
+	return text.trim().replace(/\\\,/g, ',').replace(/\\\;/g, ';').replace(/\\n/g, '<br>');  
+}
+
 /** EventRecord 物件用來放單一日曆事件 */
 class EventRecord {
-  constructor(start, end, title, description, location) {
-	  console.log(start, end, title, description, location);
+  constructor(start, end, title, location, description) {
     this.start = start;
     this.end = end;
-    /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。  */
-    this.title = title.trim().replace(/\\,/g, '，');
-   	this.description = description.trim().replace(/\\,/g, '，');
-	this.description = description.trim().replace(/\,/g, '，');
-	this.location = location.trim().replace(/\\,/g, '，');
+    this.title = CleanString(title);
+	this.location = CleanString(location);
+   	this.description = CleanString(description)
   }
 }
 
@@ -58,7 +61,7 @@ $(function() {
  * Will be read into the ICS file resolution, compared with KEY_WORDS whether we are interested in the field, put it in the field of temporary array.
  * @param  {Array<string>} input [讀入之字串陣列]
  */
-function parseOld(input) {
+/*function parseOld(input) {
   let _keywordIndex = 0;
   let tempArray = [];
   for (let i = 0; i < input.length; i++) {
@@ -74,18 +77,27 @@ function parseOld(input) {
     }
   }
 }
-
+*/
 function parse(input) {
 	let tempArray = [];
 	var OUTSIDE=0;
 	var EVENT=1;
 	var ALARM=2;
+	var DESCR=3;
 	var state=OUTSIDE;
 	for (let i = 0; i < input.length; i++){
 		if (state==OUTSIDE && input[i].match('^BEGIN:VEVENT'))
 			{
 				state=EVENT;
 			}
+		else if(state==DESCR){
+			if (input[i].match('^' + KEY_WORDS.END_DESCR[0]) || input[i].match('^' + KEY_WORDS.END_DESCR[1])){
+				state=EVENT;
+			}
+			else{
+				tempArray[3]+=input[i];
+			}
+		}
 		if (state==EVENT)
 			{
 				if (input[i].match('^BEGIN:VALARM')){
@@ -98,10 +110,12 @@ function parse(input) {
 					console.log(tempArray)
 					tempArray = [];
 				}
-			
 				else {
 					for (let j=0; j<KEY_WORDS.WORDS.length; j++){
 						if (input[i].match('^' + KEY_WORDS.WORDS[j])){
+							if (input[i].match('^' + KEY_WORDS.WORDS[3])){
+								state=DESCR;
+							}
 					 		tempArray[j] = input[i].substring(KEY_WORDS.SUBSTRING[j]);
 							
 				 		}
@@ -206,8 +220,8 @@ function printResult() {
     str += '<td>' + eventRecords[i].start.toLocaleString() + '</td>';
     str += '<td>' + eventRecords[i].end.toLocaleString() + '</td>';
     str += '<td>' + eventRecords[i].title + '</td>';
-    str += '<td>' + eventRecords[i].description + '</td>';
-	 str += '<td>' + eventRecords[i].location + '</td>';
+	str += '<td>' + eventRecords[i].location + '</td>';
+	str += '<td>' + eventRecords[i].description + '</td>';
     str += '</tr>';
     $("#table_result").append(str);
   }
@@ -215,14 +229,14 @@ function printResult() {
 
 
 function createDownloadableContent() {
-  let content = '#,開始,結束,標題,詳細\n';
+  let content = '#,Inizio,Fine,Titolo,Luogo,Descrizione\n';
   for (let i = 0; i < eventRecords.length; i++) {
     content += i + 1 + ',';
     content += eventRecords[i].start.toLocaleString() + ',';
     content += eventRecords[i].end.toLocaleString() + ',';
     content += eventRecords[i].title + ',';
-    content += eventRecords[i].description + ',';
 	content += eventRecords[i].location + ',';
+	content += eventRecords[i].description + ',';
     content += "\n";
   }
 
