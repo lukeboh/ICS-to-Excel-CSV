@@ -42,7 +42,7 @@ $(function() {
     if (INPUT_FILE === null) {
       return;
     }
-    $('#div_result_file_name').append('File name：' + INPUT_FILE.name + '<hr/>');
+    $('#div_result_file_name').append('<strong>File name：' + INPUT_FILE.name + '</strong>');
 
     let fileReader = new FileReader();
     fileReader.readAsText(INPUT_FILE);
@@ -243,7 +243,7 @@ function createDownloadableContent() {
   const fileName = 'Google_calendar' + getDateTime() + '.csv';
   const buttonDownload = '<a ' +
     'id="button_download" ' +
-    'class="btn btn-block btn-lg btn-success" ' +
+    'class="btn btn-lg btn-block btn-success" ' +
     'href="' + getblobUrl(content) + '" ' +
     'download="' + fileName + '" ' +
     '>Download CSV</a>';
