@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
@@ -20,30 +20,33 @@
 
 <body>
   <div class="container">
-    <h1 class="page-header">Google calendar ics 轉 Excel/CSV</h1>
+    <h1 class="page-header">Google calendar ics como Excel/CSV</h1>
     <div class="row">
       <div class="col-xs-12 col-md-6">
-        <h3>1. 使用支援 ES6 之瀏覽器 PROVA </h3>
-        <p>請使用最新版 <a href="https://www.google.com.tw/chrome/browser/desktop/" target="_blank">Google Chrome</a> 或 <a href="https://www.mozilla.org/zh-TW/firefox/new/" target="_blank">Firefox</a> 瀏覽器。</p>
-        <h3>2. 將日曆匯出成 <kbd>.zip</kbd> 檔</h3>
-        <p>到 <a href="https://calendar.google.com/calendar/" target="_blank">Google 日曆</a>，點選右上方設定→日曆設定→匯出日曆。</p>
-        <h3>3. 將 <kbd>.zip</kbd> 解壓縮得到 <kbd>.ics</kbd> 檔</h3>
-        <p>任何解壓縮工具都可以，推薦使用開源免費的 <a href="http://www.developershome.com/7-zip/" target="_blank">7-zip</a>。</p>
-        <p>每一個 <a href="http://fileinfo.com/extension/ics" target="_blank">.ics 檔</a>都對應到你的每一個日曆。</p>
-        <h3>4. 在下方按鈕選擇 <kbd>.ics</kbd> 檔</h3>
+        <h3>1. Use um browser que suporte o ES6</h3>
+        <p>Por favor, use a versão mais recente dos navegadores <a href="https://www.google.com.tw/chrome/browser/desktop/" target="_blank">Google Chrome</a> ou do <a href="https://www.mozilla.org/zh-TW/firefox/new/" target="_blank">Firefox</a></p>
+        <h3>2. Exporte o calendário do arquivo<kbd>.zip</kbd></h3>
+        <p>Para <a href="https://calendar.google.com/calendar/" target="_blank">Google Calendar</a>，clique em "Configurações" (botão de engrenagem), menu "Configurações", aba "Agenda". Então clique em "Exportar Agendas".</p>
+        <h3>3. Descompacte o arquivo <kbd>.zip</kbd> para  obter o arquivo<kbd>.ics</kbd></h3>
+        <p>Todas as ferramentas de descompressão podem ser usadas. Recomendado o uso ferramenta de código livre <a href="http://www.developershome.com/7-zip/" target="_blank">7-zip</a></p>
+        <p>Cada <a href="http://fileinfo.com/extension/ics" target="_blank">arquivo .ics</a> corresponde a um de seus calendários.</p>
+        <h3>4. Selecione o botão abaixo para o arquivo<kbd>.ics</kbd></h3>
         <br/>
         <input type="file" id="input_file" />
         <hr/>
-        <h3> 6. 可下載成 Excel 檔</h3>
+        <h3>5. Podem ser baixados em arquivos do Excel</h3>
         <div id="div_download"></div>
       </div>
       <div class="col-xs-12 col-md-6">
-        <h3> 5. 前 10 筆資料會顯示在這裡面</h3>
+        <h3>6. Os primeiros 10 eventos aparecerão aqui</h3>
         <div id="div_result_file_name"></div>
         <div id="div_result_table"></div>
       </div>
     </div>
-        <hr/> Source code on <a href="https://github.com/johnyluyte/ICS-to-Excel-CSV" target="_blank">Github</a>. 有疑問或需求請自行修改或至 Github 回報。
+        <hr/>
+        Código Fonte original <a href="https://github.com/johnyluyte/ICS-to-Excel-CSV" target="_blank">Github johnyluyte</a>.
+        <br/>
+        Tradução e adaptação para português do Brasil <a href=https://github.com/lukeboh/ICS-to-Excel-CSV">Github Lukeboh</a>
   </div>
 </body>
 

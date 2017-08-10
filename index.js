@@ -1,19 +1,19 @@
 "use strict";
 
-/** {Array<EventRecord>} 用來放 EventRecord，最後所有日曆事件資料都在此陣列內 */
+/** {Array<EventRecord>} Stores the EventRecord that contains all the events information. */
 let eventRecords = [];
 
 /** The right side of the page to print the first N event calendar */
 const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
-  /**The beginning of the field to read from the ICS file */
+  /** The beginning of the field to read from the ICS file */
   WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND',/* 'DESCRIPTION',*/ 'SUMMARY', 'LOCATION', 'END:VEVENT'],
-  /**Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring」 */
+  /** Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring */
   SUBSTRING: [0, 8, 6, 12, 8, 0]
 };
 
-/** EventRecord 物件用來放單一日曆事件 */
+/** EventRecord Object where to place a single calendar event */
 class EventRecord {
   constructor(start, end, title, /*more*/location) {
     this.start = start.trim();
@@ -36,7 +36,7 @@ $(function() {
     if (INPUT_FILE === null) {
       return;
     }
-    $('#div_result_file_name').append('檔案名稱：' + INPUT_FILE.name + '<hr/>');
+    $('#div_result_file_name').append('File name:' + INPUT_FILE.name + '<hr/>');
 
     let fileReader = new FileReader();
     fileReader.readAsText(INPUT_FILE);
@@ -53,7 +53,7 @@ $(function() {
 
 /**
  * Will be read into the ICS file resolution, compared with KEY_WORDS whether we are interested in the field, put it in the field of temporary array.
- * @param  {Array<string>} input [讀入之字串陣列]
+ * @param  {Array<string>} input [the string array readed]
  */
 function parse(input) {
   let _keywordIndex = 0;
@@ -73,11 +73,11 @@ function parse(input) {
 }
 
 /**
- * 將暫存之欄位陣列再次做檢查後，存入最終的 eventRecords 陣列中。
- * @param  {Array<string>} arr [暫存之欄位陣列]
+ * The array of temporary fields is checked again and stored in the final EventRecords array.
+ * @param  {Array<string>} arr [Temporary array of fields]
  */
 function handleEventRecord(arr) {
-  /** 若某日曆事件是「全天」事件，則其時間格式與「幾點到幾點」不一樣，需要再往後多切一點 */
+  /** If a calendar event is an "all day" event, its time format is not the same as "a few points" and needs to be cut */
   if (arr[1].match('^VALUE')) {
     arr[1] = arr[1].substring(11);
   }
@@ -123,7 +123,7 @@ function printResult() {
 
 
 function createDownloadableContent() {
-  let content = '#,開始,結束,標題,詳細\n';
+  let content = '#, Start, end, title, detail \ n';
   for (let i = 0; i < eventRecords.length; i++) {
     content += i + 1 + ',';
     content += eventRecords[i].start + ',';
@@ -140,7 +140,7 @@ function createDownloadableContent() {
     'class="btn btn-block btn-lg btn-success" ' +
     'href="' + getblobUrl(content) + '" ' +
     'download="' + fileName + '" ' +
-    '>下載 CSV 檔</a>';
+    '>Downlod the CSV file</a>';
   $("#div_download").append(buttonDownload);
 }
 
@@ -160,7 +160,9 @@ function getblobUrl(content) {
 
 function getDateTime() {
   // 如果現在時間是 2014/11/1, 21:07, 02 會得到 2014111_2172
+  // If the time is 2014/11/1, 21:07, 02 will get 2014111_2172
   // 而我們想要的是 20141101_210702 才對
+  // And we want is 20141101_210702 fishes :-/
   const _DATE = new Date();
   const DATE_TIME = String(_DATE.getFullYear() + fixOneDigit((_DATE.getMonth() + 1)) + fixOneDigit(_DATE.getDate()) + "_" + fixOneDigit(_DATE.getHours()) + fixOneDigit(_DATE.getMinutes()) + fixOneDigit(_DATE.getSeconds()));
   return DATE_TIME;
