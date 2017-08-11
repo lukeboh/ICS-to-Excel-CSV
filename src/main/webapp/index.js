@@ -8,20 +8,19 @@ const MAX_SHOW_RECORD = 100;
 
 const KEY_WORDS = {
   /** The beginning of the field to read from the ICS file */
-  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND',/* 'DESCRIPTION',*/ 'SUMMARY', 'LOCATION', 'END:VEVENT'],
+  WORDS: ['BEGIN:VEVENT', 'DTSTART', 'DTEND', 'DESCRIPTION', 'LOCATION', 'SUMMARY', 'END:VEVENT'],
   /** Corresponding to the beginning of the string, this is "the field from the first few characters to start cutting substring */
-  SUBSTRING: [0, 8, 6, 12, 8, 0]
+  SUBSTRING: [0, 8, 6, 12, 9, 8, 0]
 };
 
 /** EventRecord Object where to place a single calendar event */
 class EventRecord {
-  constructor(start, end, title, /*more*/location) {
+  constructor(start, end, description, location, summary) {
     this.start = start.trim();
     this.end = end.trim();
-    /** {string} 因 csv 以半形逗號作為欄位區隔，需將日曆中的半形逗號都以全形逗號取代。  */
-    this.title = title.trim().replace(/\\,/g, '，');
-   /* this.more = more.trim().replace(/\\,/g, '，');*/
-	this.location = location.trim().replace(/\\,/g, '，');
+    this.description = description;
+    this.location = location.trim().replace(/\\,/g, '，');
+    this.summary = summary.trim().replace(/\\,/g, '，');
   }
 }
 
@@ -84,7 +83,7 @@ function handleEventRecord(arr) {
   if (arr[2].match('^VALUE')) {
     arr[2] = arr[2].substring(11);
   }
-  eventRecords.push(new EventRecord(arr[1], arr[2], arr[4], arr[3]));
+  eventRecords.push(new EventRecord(arr[1], arr[2], arr[3], arr[4], arr[5]));
 }
 
 
@@ -98,11 +97,11 @@ function printResult() {
   let str = '';
   str += '<table id="table_result" class="table table-condensed table-bordered table-stripped"><tr>';
   str += '<th>#</th>';
-  str += '<th>Data inizio</th>';
-  str += '<th>Data fine</th>';
-  str += '<th>Nome evento</th>';
-  /*str += '<th>Descrizione</th>';*/
-  str += '<th>Luogo</th>';
+  str += '<th>Início</th>';
+  str += '<th>Fim</th>';
+  str += '<th>Sumário</th>';
+  str += '<th>Local</th>';
+  str += '<th>Descrição</th>';
   str += '</tr></table>';
   $("#div_result_table").append(str);
 
@@ -113,9 +112,9 @@ function printResult() {
     str += '<td>' + i + '</td>';
     str += '<td>' + eventRecords[i].start + '</td>';
     str += '<td>' + eventRecords[i].end + '</td>';
-    str += '<td>' + eventRecords[i].title + '</td>';
-    /*str += '<td>' + eventRecords[i].more + '</td>';*/
-	 str += '<td>' + eventRecords[i].location + '</td>';
+    str += '<td>' + eventRecords[i].summary + '</td>';
+    str += '<td>' + eventRecords[i].location + '</td>';
+	str += '<td>' + eventRecords[i].description + '</td>';
     str += '</tr>';
     $("#table_result").append(str);
   }
@@ -123,14 +122,14 @@ function printResult() {
 
 
 function createDownloadableContent() {
-  let content = '#, Start, end, title, detail \ n';
+  let content = '#, start, end, summary, location, description \n';
   for (let i = 0; i < eventRecords.length; i++) {
     content += i + 1 + ',';
     content += eventRecords[i].start + ',';
     content += eventRecords[i].end + ',';
-    content += eventRecords[i].title + ',';
-    /*content += eventRecords[i].more + ',';*/
-	content += eventRecords[i].luogo + ',';
+    content += eventRecords[i].summary + ',';
+    content += eventRecords[i].location + ',';
+	content += eventRecords[i].description + ',';
     content += "\n";
   }
 
