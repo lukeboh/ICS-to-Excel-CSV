@@ -60,6 +60,13 @@ function parse(input) {
   for (let i = 0; i < input.length; i++) {
     if (input[i].match('^' + KEY_WORDS.WORDS[_keywordIndex])) {
       tempArray[_keywordIndex] = input[i].substring(KEY_WORDS.SUBSTRING[_keywordIndex]);
+      
+      let j = i + 1;    
+      while (j < input.length && input[j].charAt(0) == ' ') {
+          tempArray[_keywordIndex] += input[j].substring(0);
+          j++; i++;
+      }    
+        
       _keywordIndex++;
 
       if (_keywordIndex === KEY_WORDS.WORDS.length) {
