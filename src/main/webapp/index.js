@@ -4,7 +4,7 @@
 let eventRecords = [];
 
 /** The right side of the page to print the first N event calendar */
-const MAX_SHOW_RECORD = 100;
+const MAX_SHOW_RECORD = 1000;
 
 const KEY_WORDS = {
   /** The beginning of the field to read from the ICS file */
