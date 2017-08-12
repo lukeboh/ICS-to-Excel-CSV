@@ -117,8 +117,8 @@ function printResult() {
     let str = '';
     str += '<tr>';
     str += '<td>' + i + '</td>';
-    str += '<td>' + eventRecords[i].start + '</td>';
-    str += '<td>' + eventRecords[i].end + '</td>';
+    str += '<td>' + getDateFormatted(eventRecords[i].start) + '</td>';
+    str += '<td>' + getDateFormatted(eventRecords[i].end) + '</td>';
     str += '<td>' + eventRecords[i].summary + '</td>';
     str += '<td>' + eventRecords[i].location + '</td>';
 	str += '<td>' + eventRecords[i].description + '</td>';
@@ -176,4 +176,9 @@ function getDateTime() {
 
 function fixOneDigit(x) {
   return x < 10 ? ("0" + x) : x;
+}
+
+function getDateFormatted(dateYYYYMMDD) {
+    return dateYYYYMMDD.substr(6) + '/' + dateYYYYMMDD.substr(4,2) + '/' + dateYYYYMMDD.substr(0,4);
+    
 }
