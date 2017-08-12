@@ -18,9 +18,9 @@ class EventRecord {
   constructor(start, end, description, location, summary) {
     this.start = start.trim();
     this.end = end.trim();
-    this.description = description;
-    this.location = location.trim().replace(/\\,/g, '，');
-    this.summary = summary.trim().replace(/\\,/g, '，');
+    this.description = description.trim().replace(/\\,/g, ',');
+    this.location = location.trim().replace(/\\,/g, ',');
+    this.summary = summary.trim().replace(/\\,/g, ',');
   }
 }
 
