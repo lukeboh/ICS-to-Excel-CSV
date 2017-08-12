@@ -63,7 +63,7 @@ function parse(input) {
       
       let j = i + 1;    
       while (j < input.length && input[j].charAt(0) == ' ') {
-          tempArray[_keywordIndex] += input[j].substring(0);
+          tempArray[_keywordIndex] += input[j].substring(1);
           j++; i++;
       }    
         
