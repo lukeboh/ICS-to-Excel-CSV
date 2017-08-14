@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta name="description" content="">
+<meta name="author" content="">
+</head>
+<body>
+	<ul id="events-upcoming">
+	</ul>
+	<ul id="events-past">
+	</ul>
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="format-google-calendar.js"></script>
+	<table>
+	   <tr>
+	       <th>Data</th>
+	       <th>Sumário</th>
+	       <th>dash</th>
+	       <th>Descrição</th>
+	       <th>Local</th>
+	    </tr>
+	    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+	</table>
+	<script>
+      formatGoogleCalendar.init({
+        calendarUrl: 'https://www.googleapis.com/calendar/v3/calendars/secad%40tse.jus.br/events?key=AIzaSyCWpNl8PlXnm3o88Am-2AGwGtkNGx4l_6c',
+        past: true,
+        upcoming: true,
+        sameDayTimes: true,
+        pastTopN: 1000,
+        upcomingTopN: 1000,
+        recurringEvents: true,
+        itemsTagName: 'li',
+        upcomingSelector: '#events-upcoming',
+        pastSelector: '#events-past',
+        upcomingHeading: '<h2>Eventos Futuros</h2>',
+        pastHeading: '<h2>Eventos Passados</h2>',
+        format: ['*date*', ': ', '*summary*', ' &mdash; ', '*description*', ' in ', '*location*']
+      });
+    </script>
+</body>
+</html>
